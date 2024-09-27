@@ -1,0 +1,3 @@
+[default.databases.sqlite_db]
+url = "database.sqlite"
+template_dir = "templates"
