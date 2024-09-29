@@ -14,31 +14,19 @@ use rocket::{fairing, Build, Rocket, State, fs::NamedFile};
 
 use diesel::prelude::*;
 mod schema;
+mod db;
+mod user;
 
 use schema::*;
-
-
+use db::*;
 
 use rocket::serde::{Serialize, Deserialize, json::Json};
-
-#[derive(Debug, Clone, Deserialize, Serialize, Queryable, Insertable)]
-#[serde(crate = "rocket::serde")]
-#[diesel(table_name = posts)]
-pub struct Post {
-    pub id: Option<i32>,
-    pub title: String,
-    pub content: String,
-}
+use user::users_stage;
 
 struct AppState {
     count: AtomicI64
 }
 
-//#[derive(Database)]
-#[database("sqlite_db")]
-struct Db(diesel::SqliteConnection);
-
-type DbResult<T, E=rocket::response::Debug<diesel::result::Error>> = std::result::Result<T, E>;
 
 fn sanitize_path(base: PathBuf, path: PathBuf) -> Option<PathBuf> {
     let prefix = if base.is_absolute() {
@@ -122,5 +110,6 @@ fn rocket() -> _ {
         .attach(Db::fairing())
         .attach(AdHoc::on_ignite("Diesel Migrations", run_migrations))
         .attach(Template::fairing())
+        .attach(users_stage())
         .mount("/", routes![index, feed, static_file])
 }

@@ -4,11 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rocket = { version = "0.5.1", features = ["json"] }
+rocket = { version = "0.5.1", features = ["json","secrets"] }
 reqwest = "0.12.7"
 markdown = "1.0.0-alpha.20"
 diesel = { version = "2", features = ["returning_clauses_for_sqlite_3_35"] }
 diesel_migrations = "2"
+rss = "2"
+password-hash = "0.5"
+argon2 = "0.5.3"
 
 [dependencies.rocket_db_pools]
 version = "0.2.0"
