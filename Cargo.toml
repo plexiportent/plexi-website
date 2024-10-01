@@ -12,6 +12,7 @@ diesel_migrations = "2"
 rss = "2"
 password-hash = "0.5"
 argon2 = "0.5.3"
+futures = "0.3.30"
 
 [dependencies.rocket_db_pools]
 version = "0.2.0"

@@ -4,7 +4,7 @@
 use std::{fmt::Debug, path::PathBuf, sync::atomic::{AtomicI64, Ordering}};
 
 use reqwest::dns::Name;
-use rocket::fairing::AdHoc;
+use rocket::{fairing::AdHoc, http::hyper::Uri};
 /*use rocket_db_pools::{Database, Connection};
 use rocket_db_pools::sqlx::{self, Row};*/
 
@@ -16,16 +16,22 @@ use diesel::prelude::*;
 mod schema;
 mod db;
 mod user;
+mod rss_gen;
+mod config;
+mod post;
+mod time_util;
 
+use config::*;
 use schema::*;
 use db::*;
 
 use rocket::serde::{Serialize, Deserialize, json::Json};
-use user::users_stage;
+use user::{users_stage, CurrentUser};
 
 struct AppState {
     count: AtomicI64
 }
+
 
 
 fn sanitize_path(base: PathBuf, path: PathBuf) -> Option<PathBuf> {
@@ -57,23 +63,13 @@ async fn static_file(path: PathBuf) -> Option<NamedFile> {
 }
 
 
-#[get("/rss")]
-async fn feed(state: &State<AppState>) -> Template {
-    let hits = state.count.fetch_add(1, Ordering::Relaxed);
-    Template::render("rss", context! {
-        count: hits
-    })
-}
-
 #[get("/")]
-async fn index(state: &State<AppState>, db:Db) -> DbResult<Template> {
+async fn index(state: &State<AppState>, db:Db, user: Option<CurrentUser>, config: &State<Config>) -> DbResult<Template> {
     let hits = state.count.fetch_add(1, Ordering::Relaxed);
-    let post_list: Vec<Post> = db.run(move |conn| {
-        posts::table
-        .load(conn)
-
-    }).await?;
+    let post_list = post::get_all_posts(&db).await?;
     Ok(Template::render("index", context! {
+        config: config.inner(),
+        user: user,
         count: hits,
         posts: post_list,
     }))
@@ -105,11 +101,18 @@ async fn run_migrations(rocket: Rocket<Build>) -> Rocket<Build> {
 
 #[launch]
 fn rocket() -> _ {
+    let rocket_builder = rocket::build();
+    let figment = rocket_builder.figment();
+
+    let config: Config = figment.extract().expect("config");
     rocket::build()
         .manage(AppState { count: AtomicI64::new(0)})
         .attach(Db::fairing())
         .attach(AdHoc::on_ignite("Diesel Migrations", run_migrations))
         .attach(Template::fairing())
         .attach(users_stage())
-        .mount("/", routes![index, feed, static_file])
+        .attach(config_stage())
+        .attach(rss_gen::rss_stage())
+        .attach(post::posts_stage())
+        .mount("/", routes![index, static_file])
 }

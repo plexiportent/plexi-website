@@ -1,3 +1,9 @@
+[default]
+rss_uri = "http://localhost:8000/rss"
+base_uri = "http://localhost:8000"
+title = "website title"
+description = "this is a website"
+
 [default.databases.sqlite_db]
 url = "database.sqlite"
 template_dir = "templates"

@@ -1,7 +1,7 @@
-use rocket::{fairing::AdHoc, form::Form, http::{Cookie, CookieJar, Status}, request::{self, FromRequest, Outcome}, Request};
+use rocket::{fairing::AdHoc, form::Form, http::{Cookie, CookieJar, Status}, request::{self, FromRequest, Outcome}, serde::Serialize, Request};
 use diesel::prelude::*;
 
-use crate::{db::*, schema::*};
+use crate::{db::*, schema::*, config::Config};
 use rocket_dyn_templates::{context, Template};
 
 
@@ -12,7 +12,8 @@ struct PasswordLogin {
     password: String,
 }
 
-#[derive(Debug, Clone, Queryable)]
+#[derive(Debug, Clone, Queryable, Serialize)]
+#[serde(crate = "rocket::serde")]
 #[diesel(table_name = users)]
 pub struct CurrentUser {
     pub id: i32,
@@ -109,8 +110,9 @@ async fn login_post(login: Form<PasswordLogin>, jar: &CookieJar<'_>, db: Db) -> 
 }
 
 #[get("/login")]
-async fn login() -> Template {
+async fn login(config: &Config) -> Template {
     Template::render("login", context! {
+        config: config
     })
 }
 

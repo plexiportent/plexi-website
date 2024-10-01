@@ -5,6 +5,7 @@ diesel::table! {
         title -> Text,
         content -> Text,
         author -> Integer,
+        timestamp -> BigInt,
     }
 }
 

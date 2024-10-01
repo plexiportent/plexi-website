@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="alternate" type="application/rss+xml" href="{{ config.rss_uri }}">
 </head>
 <body>
+<h5>{{ config.title }}</h5>
+<h6>{{ config.description }}</h6>
+<nav>
+{% if user %}
+<a href="/post/new">write a post</a>
+{{ user.name }}
+{% else %}
+<a href="/user/login">login</a>
+{% endif %}
+</nav>
 {% block content %} {% endblock content %}
 </body>
 </html>

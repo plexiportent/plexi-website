@@ -19,6 +19,7 @@ pub struct Post {
     pub title: String,
     pub content: String,
     pub author: i32,
+    pub timestamp: i64,
 }
 
 
