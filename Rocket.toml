@@ -7,3 +7,6 @@ description = "this is a website"
 [default.databases.sqlite_db]
 url = "database.sqlite"
 template_dir = "templates"
+
+[debug]
+secret_key="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

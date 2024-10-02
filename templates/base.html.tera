@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <link rel="alternate" type="application/rss+xml" href="{{ config.rss_uri }}">
+<link rel="stylesheet" href="/static/base.css">
 </head>
 <body>
-<h5>{{ config.title }}</h5>
-<h6>{{ config.description }}</h6>
+<header class="panel">
+<h1>{{ config.title }}</h1>
+<p>{{ config.description }}</p>
 <nav>
 {% if user %}
 <a href="/post/new">write a post</a>
@@ -14,6 +16,7 @@
 <a href="/user/login">login</a>
 {% endif %}
 </nav>
+</header>
 {% block content %} {% endblock content %}
 </body>
 </html>

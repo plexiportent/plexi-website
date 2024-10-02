@@ -1,0 +1,46 @@
+@font-face {
+    font-family: legible;
+    src: url("fonts/Atkinson_Hyperlegible/AtkinsonHyperlegible-Regular.ttf");
+}
+@property --positive {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #181818;
+}
+@property --color-negative {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #f0f0f0;
+}
+@property --active-negative {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #fbe7ff;
+}
+@property --active-positive {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #875a91;
+}
+body {
+    font-size: 16px;
+    font-family: legible;
+    color: var(--positive);
+    background-color: var(--color-negative);
+}
+input {
+    width: 100%;
+    background-color: var(--active-negative);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--active-positive);
+    margin-bottom: 10px;
+}
+.panel {
+    border: 5px solid var(--positive);
+    box-shadow: 10px 10px 0px;
+    padding: 20px;
+    margin: auto;
+    margin-bottom: 20px;
+    width: 50%;
+}

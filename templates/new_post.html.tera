@@ -1,9 +1,13 @@
 {% extends "base" %}
 {% block content %}
+<div class="panel">
 <h2>Write a new post</h2>
+</div>
+<article class="panel">
 <form method="post" action="/post">
 <input type="text" name="title"/>
-<input type="textarea" name="content"/>
+<textarea name="content"></textarea>
 <input type="submit"/>
+</article>
 </form>
 {% endblock content %}

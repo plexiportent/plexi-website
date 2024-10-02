@@ -66,7 +66,7 @@ async fn static_file(path: PathBuf) -> Option<NamedFile> {
 #[get("/")]
 async fn index(state: &State<AppState>, db:Db, user: Option<CurrentUser>, config: &State<Config>) -> DbResult<Template> {
     let hits = state.count.fetch_add(1, Ordering::Relaxed);
-    let post_list = post::get_all_posts(&db).await?;
+    let post_list = db.get_all_posts().await?;
     Ok(Template::render("index", context! {
         config: config.inner(),
         user: user,
@@ -101,10 +101,6 @@ async fn run_migrations(rocket: Rocket<Build>) -> Rocket<Build> {
 
 #[launch]
 fn rocket() -> _ {
-    let rocket_builder = rocket::build();
-    let figment = rocket_builder.figment();
-
-    let config: Config = figment.extract().expect("config");
     rocket::build()
         .manage(AppState { count: AtomicI64::new(0)})
         .attach(Db::fairing())

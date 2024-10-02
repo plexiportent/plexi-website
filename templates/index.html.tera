@@ -1,8 +1,10 @@
 {% extends "base" %}
 {% block content %}
+<div class="panel">
 Hello world! You are page access: {{ count }}
+</div>
 {% for post in posts %}
-<article>
+<article class="panel">
 <h1>{{ post.title }}</h1>
 <p>{{ post.content }}</p>
 </article>

@@ -35,14 +35,6 @@ async fn create_new_post(db: &Db, title: String, content: String, user_id: i32) 
     Ok(())
 }
 
-pub async fn get_all_posts(db: &Db) -> DbResult<Vec<Post>> {
-    let post_list: Vec<Post> = db.run(move |conn| {
-        posts::table
-        .load(conn)
-
-    }).await?;
-    Ok(post_list)
-}
 
 #[get("/new")]
 async fn new_post(user: CurrentUser, config: &Config) -> Template {
